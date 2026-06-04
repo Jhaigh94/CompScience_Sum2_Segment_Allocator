@@ -1,6 +1,9 @@
 # CompScience_Sum2_Segment_Allocator
 CompScience_Sum2_Segment_Allocator
 
+# Repo Link 
+https://github.com/Jhaigh94/CompScience_Sum2_Segment_Allocator/tree/main
+
 # Segment Allocator
 
 A Tkinter application for staff training in segmentation around TV behavioural questions
