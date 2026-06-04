@@ -132,9 +132,9 @@ class Q1Page(ttk.Frame):
         ttk.Button(nav, text="Back", command=lambda: app.show_page(app.page1)).pack(side="left", padx=20)
         ttk.Button(nav, text="Next", command=self.go_next).pack(side="right", padx=20)
     def go_next(self):
-        # Must pick one of the viewing options, or can't go forward.
+        # Must pick one of the viewing options, or can't go forward
         if self.app.q1_var.get() == 0:
-            self.err.config(text="Please select an answer for Q1.")
+            self.err.config(text="Please select an answer for Q1")
         else:
             self.err.config(text="")
             self.app.show_page(self.app.page3)
