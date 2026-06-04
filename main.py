@@ -1,6 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
+import tkinter.filedialog
+import tkinter.messagebox
+import csv
 
+# Q1 viewing preference options (label and code)
 Q1_CHOICES = [
     ("TV at time of broadcast", 1),
     ("TV later than original broadcast time (recorded)", 2),
@@ -8,6 +12,8 @@ Q1_CHOICES = [
     ("Paid for on-demand video (Netflix, Prime etc)", 4),
     ("Online video content/live streaming (YouTube, Twitch, TikTok etc)", 5)
 ]
+
+# Q2 attitudinal statements
 q2questions = [
     "I prefer to watch TV on my own so there are no distractions",
     "When watching TV I’m using another screen at the same time",
@@ -24,7 +30,22 @@ q2questions = [
     "I enjoy finding new programmes to watch",
     "I mainly get recommendations for programmes from friends and family"
 ]
-q2_options = ["Disagree strongly", "Disagree", "Neither agree nor disagree", "Agree", "Agree strongly"]
+
+# Attitudinal dropdown options (label only and label→code mapping)
+q2_options = [
+    "Disagree strongly",
+    "Disagree",
+    "Neither agree nor disagree",
+    "Agree",
+    "Agree strongly"
+]
+q2_lookup = {
+    "Disagree strongly": 1,
+    "Disagree": 2,
+    "Neither agree nor disagree": 3,
+    "Agree": 4,
+    "Agree strongly": 5
+}
 
 class App(tk.Tk):
     def __init__(self):
@@ -44,6 +65,33 @@ class App(tk.Tk):
         self.show_page(self.page1)
     def show_page(self, page):
         page.tkraise()
+    def export_data(self):
+        # Validate name and Q1 (should already be checked, but double validation is good)
+        if not self.name_var.get().strip():
+            tk.messagebox.showerror("Error", "Respondent name missing.")
+            return
+        if self.q1_var.get() == 0:
+            tk.messagebox.showerror("Error", "Q1 response missing.")
+            return
+        # Map Q2 dropdown answers to their numerical codes for output
+        q2_codes = []
+        for svar in self.q2_vars:
+            label = svar.get()
+            if label in q2_lookup:
+                q2_codes.append(q2_lookup[label])
+            else:
+                q2_codes.append(0)  # Should never happen, all are validated
+        headers = ["Name", "Q1"] + [f"B5r{i+1}" for i in range(14)]
+        row = [self.name_var.get().strip(), self.q1_var.get()] + q2_codes
+        # Save as CSV
+        path = tk.filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV", "*.csv")])
+        if not path:
+            return
+        with open(path, "w", newline="") as file:
+            wr = csv.writer(file)
+            wr.writerow(headers)
+            wr.writerow(row)
+        tk.messagebox.showinfo("Export Complete", f"Responses exported to {path}")
 
 class NamePage(ttk.Frame):
     def __init__(self, parent, app):
@@ -102,13 +150,14 @@ class Q2Page(ttk.Frame):
         nav = ttk.Frame(self)
         nav.pack(pady=30)
         ttk.Button(nav, text="Back", command=lambda: app.show_page(app.page2)).pack(side="left", padx=20)
-        ttk.Button(nav, text="Export (test)", command=self.export).pack(side="right", padx=20)
+        ttk.Button(nav, text="Export to CSV", command=self.export).pack(side="right", padx=20)
     def export(self):
         for idx, svar in enumerate(self.app.q2_vars):
             if svar.get() == "":
                 self.err.config(text=f"Please answer statement {idx+1}.")
                 return
-        self.err.config(text="(Would export data here)")
+        self.err.config(text="")
+        self.app.export_data()
 
 if __name__ == "__main__":
     App().mainloop()
