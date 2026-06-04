@@ -1,7 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 
-#import is my main GUI project for the Channel 5 segment allocator assignment.import tkinter.filedialog
+#import is my main GUI project for the segment allocator assignment
+
+import tkinter.filedialog
+
 # It asks for a respondent name, then Q1, then all the Q2 statements.
 # It makes sure everything is filled in before you can export to CSV.
 
