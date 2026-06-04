@@ -1,10 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-import tkinter.filedialog
-import tkinter.messagebox
-import csv
 
-# This is my main GUI project for the Channel 5 segment allocator assignment.
+#import is my main GUI project for the Channel 5 segment allocator assignment.import tkinter.filedialog
 # It asks for a respondent name, then Q1, then all the Q2 statements.
 # It makes sure everything is filled in before you can export to CSV.
 
@@ -55,7 +52,7 @@ class App(tk.Tk):
     def __init__(self):
         # This sets up the window and the three main screens for the app.
         super().__init__()
-        self.title("Channel 5 Segment Allocator")
+        self.title("Company Segment Allocator")
         self.geometry("800x600")
         self.name_var = tk.StringVar()
         self.q1_var = tk.IntVar(value=0)
@@ -176,3 +173,8 @@ class Q2Page(ttk.Frame):
 if __name__ == "__main__":
     # This just runs the whole program.
     App().mainloop()
+import tkinter.messagebox
+import csv
+
+
+
