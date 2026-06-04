@@ -1,6 +1,12 @@
 # CompScience_Sum2_Segment_Allocator
 CompScience_Sum2_Segment_Allocator
 
+<<<<<<< HEAD
+=======
+# CompScience_Sum2_Segment_Allocator
+CompScience_Sum2_Segment_Allocator
+
+>>>>>>> 70d1ed18cb00bcd213f1065f5bdf1e34a3d0479c
 # Segment Allocator
 
 A Tkinter application for staff training in segmentation around TV behavioural questions
