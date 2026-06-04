@@ -4,6 +4,10 @@ import tkinter.filedialog
 import tkinter.messagebox
 import csv
 
+# This is my main GUI project for the Channel 5 segment allocator assignment.
+# It asks for a respondent name, then Q1, then all the Q2 statements.
+# It makes sure everything is filled in before you can export to CSV.
+
 # Q1 viewing preference options (label and code)
 Q1_CHOICES = [
     ("TV at time of broadcast", 1),
@@ -49,6 +53,7 @@ q2_lookup = {
 
 class App(tk.Tk):
     def __init__(self):
+        # This sets up the window and the three main screens for the app.
         super().__init__()
         self.title("Channel 5 Segment Allocator")
         self.geometry("800x600")
@@ -63,24 +68,28 @@ class App(tk.Tk):
         for page in (self.page1, self.page2, self.page3):
             page.grid(row=0, column=0, sticky="nsew")
         self.show_page(self.page1)
+
     def show_page(self, page):
+        # This just makes the right frame come to the front.
         page.tkraise()
+
     def export_data(self):
-        # Validate name and Q1 (should already be checked, but double validation is good)
+        # This is the function that saves everything into a CSV file for marking.
+        # It checks that name and Q1 are not missing, but that should never happen.
         if not self.name_var.get().strip():
             tk.messagebox.showerror("Error", "Respondent name missing.")
             return
         if self.q1_var.get() == 0:
             tk.messagebox.showerror("Error", "Q1 response missing.")
             return
-        # Map Q2 dropdown answers to their numerical codes for output
+        # This puts together the answers for CSV output.
         q2_codes = []
         for svar in self.q2_vars:
             label = svar.get()
             if label in q2_lookup:
                 q2_codes.append(q2_lookup[label])
             else:
-                q2_codes.append(0)  # Should never happen, all are validated
+                q2_codes.append(0)  # Should never happen if validated above
         headers = ["Name", "Q1"] + [f"B5r{i+1}" for i in range(14)]
         row = [self.name_var.get().strip(), self.q1_var.get()] + q2_codes
         # Save as CSV
@@ -99,10 +108,12 @@ class NamePage(ttk.Frame):
         self.app = app
         ttk.Label(self, text="Respondent Name", font=("Arial", 16, "bold")).pack(pady=25)
         ttk.Entry(self, textvariable=app.name_var, width=50).pack()
+        # Add error label for validation messages
         self.err = ttk.Label(self, text="", foreground="red")
         self.err.pack()
         ttk.Button(self, text="Next", command=self.go_next).pack(pady=35)
     def go_next(self):
+        # If no name is given, make the user try again.
         name = self.app.name_var.get().strip()
         if not name:
             self.err.config(text="Please enter the respondent's name.")
@@ -124,6 +135,7 @@ class Q1Page(ttk.Frame):
         ttk.Button(nav, text="Back", command=lambda: app.show_page(app.page1)).pack(side="left", padx=20)
         ttk.Button(nav, text="Next", command=self.go_next).pack(side="right", padx=20)
     def go_next(self):
+        # Must pick one of the viewing options, or can't go forward.
         if self.app.q1_var.get() == 0:
             self.err.config(text="Please select an answer for Q1.")
         else:
@@ -138,6 +150,7 @@ class Q2Page(ttk.Frame):
         ttk.Label(self, text="Please select one response per statement:", font=("Arial", 12)).pack(anchor="w", pady=4)
         self.combos = []
         for i in range(len(q2questions)):
+            # This makes a question label and dropdown for each attitudinal statement.
             frame = ttk.Frame(self)
             frame.pack(fill="x", pady=2)
             ttk.Label(frame, text=f"{i+1}. {q2questions[i]}", width=70, wraplength=490, anchor="w", justify="left").pack(side="left")
@@ -152,6 +165,7 @@ class Q2Page(ttk.Frame):
         ttk.Button(nav, text="Back", command=lambda: app.show_page(app.page2)).pack(side="left", padx=20)
         ttk.Button(nav, text="Export to CSV", command=self.export).pack(side="right", padx=20)
     def export(self):
+        # Checks all dropdowns are answered. Stops and tells user if not.
         for idx, svar in enumerate(self.app.q2_vars):
             if svar.get() == "":
                 self.err.config(text=f"Please answer statement {idx+1}.")
@@ -160,4 +174,5 @@ class Q2Page(ttk.Frame):
         self.app.export_data()
 
 if __name__ == "__main__":
+    # This just runs the whole program.
     App().mainloop()
